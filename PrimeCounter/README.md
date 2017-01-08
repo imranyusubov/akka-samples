@@ -1,4 +1,4 @@
-<h1>PrimeCounter</h1><br/>
+<h1>Akka Prime Counter</h1><br/>
 PrimeCounter is an Akka actor based concurrent application that computes the number of primes between 0 and the given number. Figuring out if a number is prime or not a time consuming effort; hence, it is a good candidate for concurrency. The application demonstrates simple usage of Akka actor model.
 
 MasterActor, is the root actor (supervisor) that rotes messages to child actors.
