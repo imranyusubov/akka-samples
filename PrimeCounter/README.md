@@ -23,7 +23,7 @@ if(message instanceof Size){
            unhandled(message);
        }
 ```
-MasterActor, forwards the messages to PrimeVerifierActor which verifies if the given number is prime or not. This is where the computation is done, and we wish to achieve maximum concurrency. Once, <b>PrimeVerifierActor</b> completes the computation, it generates a new message of type Number and passes it back to MasterActor.
+MasterActor, forwards the messages to <b>PrimeVerifierActor</b> which verifies if the given number is prime or not. This is where the computation is done, and we wish to achieve maximum concurrency. Once, PrimeVerifierActor completes the computation, it generates a new message of type Number and passes it back to MasterActor.
 ```java 
  if(message instanceof Long){
           long number=(Long) message;
