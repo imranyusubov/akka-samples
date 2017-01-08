@@ -1,5 +1,5 @@
 <h1>Akka Prime Counter</h1><br/>
-PrimeCounter is an Akka actor based concurrent application that computes the number of primes between 0 and the given number, and demonstrates a simple use case of Akka actors. Akka is a toolkit for developing concurrent, and distributed applications.Actor based design promets lock free concurrency, as a result the application becomes more reliable and scalable. For more info, http://akka.io/.  
+PrimeCounter is an Akka actor based concurrent application that computes the number of primes between 0 and the given number, and demonstrates a simple use case of Akka actors. Akka is a toolkit for developing concurrent, and distributed applications.Actors are asynchronous, non-blocking, event-driven programming model,which is higly scalable and reliable. For more info, http://akka.io/.  
 
 Verifying if a number is prime or not is a time consuming task; hence, it is a good candidate for concurrency. So the actor based approach can help to scale the process up and out. The application contains a few actors that handles the process.
 <b>MasterActor</b>, is the root actor (supervisor) that rotes received messages to child actors.
