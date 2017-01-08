@@ -1,6 +1,16 @@
 <h1>Akka Prime Counter</h1><br/>
-PrimeCounter is an Akka actor based concurrent application that computes the number of primes between 0 and the given number. Figuring out if a number is prime or not a time consuming effort; hence, it is a good candidate for concurrency. The application demonstrates simple usage of Akka actor model.
+PrimeCounter is an Akka actor based concurrent application that computes the number of primes between 0 and the given number, and demonstrates a simple use case of Akka actors. Akka is a toolkit for developing concurrent, and distributed applications.Actor based design promets lock free concurrency, as a result the application becomes more reliable and scalable. For more info, http://akka.io/.  
 
-MasterActor, is the root actor (supervisor) that rotes messages to child actors.
-MapActor, loops through 0 to the given number and creates messages of type Long and passes them back to MasterActor.
-MasterActor, forwards the messages to PrimeVerifierActor which verifies if the given number is prime or not. This is where the computation is done, and we wish to achieve maximum concurrency. Once, PrimeVerifierActor completes the computation, it generates a new message of type Number and passes it back to MasterActor. Finally, the MasterActor counts the number of primes in the given range as the messages of type Number are received.
+Verifying if a number is prime or not is a time consuming task; hence, it is a good candidate for concurrency. So the actor based approach can help to scale the process up and out. The application contains a few actors that handles the process.
+<b>MasterActor</b>, is the root actor (supervisor) that rotes received messages to child actors.
+<b>MapActor</b>, loops through 0 to the given number and creates messages of type Long and passes them back to MasterActor.
+MasterActor, forwards the messages to PrimeVerifierActor which verifies if the given number is prime or not. This is where the computation is done, and we wish to achieve maximum concurrency. Once, <b>PrimeVerifierActor</b> completes the computation, it generates a new message of type Number and passes it back to MasterActor. Finally, the MasterActor counts the number of primes in the given range as the messages of type Number are received.
+
+The most time consuming part is the verification part. Therefore, we want to parallise the PrimeVerifierActor as much as posiible and ensure we get maximum benifit from the underlying hardware. On the reference machine, I had 16 cores, so initialization of the PrimeVerifierActor with the following syntax keeps the CPU busiest and gives best performance. 
+```java
+private ActorRef primeVerifierActor=getContext()
+            .actorOf(new Props(PrimeVerifierActor.class)
+                    .withRouter(new RoundRobinRouter(16)),"prime-verifier"); 
+``` 
+
+                    
