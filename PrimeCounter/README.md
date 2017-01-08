@@ -11,7 +11,7 @@ if(message instanceof Size){
         }else if(message instanceof Long){
              primeVerifierActor.tell(message,self());
         }else if(message instanceof Number){
-        ```
+   ```
 <b>MapActor</b>, loops through 0 to the given number and creates messages of type Long and passes them back to MasterActor.
  
  ```java  
