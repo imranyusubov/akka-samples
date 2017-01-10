@@ -5,7 +5,10 @@ import akka.actor.Props;
 import akka.actor.UntypedActor;
 import akka.routing.RoundRobinRouter;
 import messages.Number;
+import messages.Result;
 import messages.Size;
+
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by imran on 1/7/17.
@@ -15,38 +18,28 @@ public class MasterActor extends UntypedActor {
     private ActorRef primeVerifierActor=getContext()
             .actorOf(new Props(PrimeVerifierActor.class)
                     .withRouter(new RoundRobinRouter(16)),"prime-verifier");
+    private ActorRef counterActor=getContext()
+            .actorOf(new Props(CounterActor.class),"counter-actor");
 
-    private Long primeCount=0l;
-    private Long computed=0l;
-    private Size size=new Size(0l);
-    private Long started;
-    private Long completed=0l;
+    private CountDownLatch countDownLatch;
 
-    @Override
-    public void preStart() {
-        started=System.nanoTime();
+    public MasterActor(CountDownLatch countDownLatch){
+        this.countDownLatch=countDownLatch;
     }
 
     public void onReceive(Object message) throws Exception {
         if(message instanceof Size){
-            System.out.println("Computation started.");
-            this.size=(Size) message;
+            Size size=(Size) message;
             mapActor.tell(size,self());
-        }else if(message instanceof Long){
-             primeVerifierActor.tell(message,self());
+        }else if(message instanceof Integer){
+            primeVerifierActor.tell(message,self());
         }else if(message instanceof Number){
-            Number number=(Number) message;
-            computed++;
-            if(number.getPrime()){
-                primeCount++;
-            }
-
-            if(computed==size.getSize()-1){
-                completed=System.nanoTime();
-                long elapsedTime=completed-started;
-                double seconds = (double)elapsedTime / 1000000000.0;
-                System.out.println("Computation completed, Prime Numbers="+primeCount+" Duration ="+seconds+" seconds.");
-            }
+            countDownLatch.countDown();
+            counterActor.tell(message);
+        }else if(message instanceof Result){
+            counterActor.forward(message,getContext());
+        }else {
+            unhandled(message);
         }
     }
 

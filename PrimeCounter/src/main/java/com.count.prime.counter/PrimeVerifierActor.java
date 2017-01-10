@@ -9,8 +9,8 @@ import messages.Number;
 public class PrimeVerifierActor extends UntypedActor {
 
     public void onReceive(Object message) throws Exception {
-        if(message instanceof Long){
-          long number=(Long) message;
+        if(message instanceof Integer){
+          Integer number=(Integer) message;
           boolean prime = PrimeVerifier.isPrime(number);
           if(prime){
               getSender().tell(new Number(number,true));
