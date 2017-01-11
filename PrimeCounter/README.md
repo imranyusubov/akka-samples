@@ -75,13 +75,13 @@ Once the count is equals the initial size/range, it prints out the duration of t
 ```java 
    countDownLatch.await();
 ```   
-The time consuming part of the process is the verification part. Therefore, we want maximum concurrency for PrimeVerifierActor. On the reference machine, I had 16 cores, so initialization of the PrimeVerifierActor with the following syntax keeps the CPU busiest and gives best performance (43-46 seconds).
+The time consuming part of the process is the verification part. Therefore, we want maximum concurrency for PrimeVerifierActor. The test machine had 16 cores, so initialization of the PrimeVerifierActor with a RoundRobinRouter of 16 keeps the CPU busiest and gives the best performance (43-46 seconds).
 
 ```java
 private ActorRef primeVerifierActor=getContext()
             .actorOf(new Props(PrimeVerifierActor.class)
                     .withRouter(new RoundRobinRouter(16)),"prime-verifier"); 
 ``` 
-A none concurrent version of the application with one PrimeVerifierActor, or no actor version, takes around 115 to 120 seconds for the same range.   
+Where a none concurrent version of the application, takes roughly around 115 to 120 seconds for the same range.   
 
                     
