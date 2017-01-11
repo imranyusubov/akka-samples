@@ -47,9 +47,10 @@ public class Main {
     private static void startComputation() throws Exception {
         timeout = new Timeout(Duration.parse("500 seconds"));
         system=ActorSystem.create("my-actor-system");
+
         ActorRef master = system.actorOf(new Props(new UntypedActorFactory() {
             public UntypedActor create() {
-                return new MasterActor(countDownLatch);
+                return new MasterActor(countDownLatch,numberOfCores);
             }
         }), "master");
 

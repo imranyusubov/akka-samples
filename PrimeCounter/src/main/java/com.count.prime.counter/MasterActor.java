@@ -14,18 +14,26 @@ import java.util.concurrent.CountDownLatch;
  * Created by imran on 1/7/17.
  */
 public class MasterActor extends UntypedActor {
-    private ActorRef mapActor=getContext().actorOf(new Props(MapActor.class),"map");
-    private ActorRef primeVerifierActor=getContext()
-            .actorOf(new Props(PrimeVerifierActor.class)
-                    .withRouter(new RoundRobinRouter(16)),"prime-verifier");
-    private ActorRef counterActor=getContext()
-            .actorOf(new Props(CounterActor.class),"counter-actor");
+
+    private ActorRef mapActor;
+    private ActorRef primeVerifierActor;
+    private ActorRef counterActor;
 
     private CountDownLatch countDownLatch;
 
-    public MasterActor(CountDownLatch countDownLatch){
+
+    public MasterActor(CountDownLatch countDownLatch,
+                       Integer numberOfCores){
         this.countDownLatch=countDownLatch;
+        /*Initialize actors*/
+        mapActor=getContext().actorOf(new Props(MapActor.class),"map");
+        counterActor=getContext()
+                .actorOf(new Props(CounterActor.class),"counter-actor");
+        primeVerifierActor=getContext()
+                .actorOf(new Props(PrimeVerifierActor.class)
+                        .withRouter(new RoundRobinRouter(numberOfCores)),"prime-verifier");
     }
+
 
     public void onReceive(Object message) throws Exception {
         if(message instanceof Size){
